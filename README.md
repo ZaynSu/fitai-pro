@@ -111,7 +111,7 @@ FitAI Pro 通过 **Prompt 工程 + 结构化领域知识库** 解决这些问题
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/sneakesu-create/fitai-pro.git
+git clone https://github.com/ZaynSu/fitai-pro.git
 cd fitai-pro
 
 # 2. 安装依赖
@@ -255,7 +255,7 @@ st.checkbox(value=default_checked, key=_ck_key)
 
 ## 👤 作者
 
-**粟展** ([@sneakesu-create](https://github.com/sneakesu-create))
+**粟展** ([@ZaynSu](https://github.com/ZaynSu))
 
 湘潭理工学院 数据科学与大数据技术在读 · 关注 AI 应用、健身科学化、女性健康
 
@@ -271,7 +271,7 @@ st.checkbox(value=default_checked, key=_ck_key)
 
 ## 📄 License
 
-[XIT License](LICENSE) © 2026 谢沐雨
+[XIT License](LICENSE) © 2026 粟展
 
 ---
 
