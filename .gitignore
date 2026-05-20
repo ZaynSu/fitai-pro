@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# 数据库（用户隐私）
+*.db
+*.sqlite
+*.sqlite3
+*.backup*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# 临时文件
+*.tmp
+*.bak
+
+# 求职资料不公开
+career_pack/
+
+# 个人测试材料
+test_*/
+
+# 服务器路径（不应该出现）
+mnt/
+
+# 备份
+*backup*.db
