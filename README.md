@@ -255,7 +255,7 @@ st.checkbox(value=default_checked, key=_ck_key)
 
 ## 👤 作者
 
-**谢沐雨** ([@sneakesu-create](https://github.com/sneakesu-create))
+**粟展** ([@sneakesu-create](https://github.com/sneakesu-create))
 
 湘潭理工学院 数据科学与大数据技术在读 · 关注 AI 应用、健身科学化、女性健康
 
