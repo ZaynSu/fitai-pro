@@ -9,7 +9,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-FF4B4B.svg)](https://streamlit.io/)
 [![Ollama](https://img.shields.io/badge/Ollama-llama3-000000.svg)](https://ollama.com/)
-[![License: MIT](https://img.shields.io/badge/License-XIT-green.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
@@ -271,7 +271,7 @@ st.checkbox(value=default_checked, key=_ck_key)
 
 ## 📄 License
 
-[XIT License](LICENSE) © 2026 粟展
+[MIT License](LICENSE) © 2026 粟展
 
 ---
 
