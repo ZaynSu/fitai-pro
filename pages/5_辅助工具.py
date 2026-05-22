@@ -306,7 +306,44 @@ else:
                 st.info("该品类暂无收录产品")
             else:
                 for i, prod in enumerate(cat_products):
-                    render_product_card(prod, i + 5000)
+                    saved = get_equipment_rating(prod["product_name"], prod["category"])
+                    is_owned = bool(saved and saved.get("is_owned"))
+
+                    avg_score = None
+                    if saved:
+                        scores = [saved.get(d["key"], 0) for d in RATING_DIMENSIONS if saved.get(d["key"], 0) > 0]
+                        if scores:
+                            avg_score = sum(scores) / len(scores)
+
+                    journals = get_equipment_journals(prod["product_name"], prod["category"])
+                    latest_comment = journals[0]["content"] if journals else None
+
+                    ci = EQUIPMENT_CATEGORIES.get(prod["category"], {})
+                    avatar = ci.get("icon", "🔧")
+
+                    card_html = render_list_card(
+                        avatar=avatar,
+                        brand=prod["brand"],
+                        product_name=prod["product_name"],
+                        category=prod["category"],
+                        tier=prod["tier"],
+                        rating_score=avg_score,
+                        journal_count=len(journals),
+                        latest_comment=latest_comment,
+                        is_owned=is_owned,
+                        price_range=prod["price_range"]
+                    )
+                    st.markdown(card_html, unsafe_allow_html=True)
+
+                    if st.button(
+                        "→ 查看详情和评分",
+                        key=f"cat_detail_enter_{i}_{prod['product_name']}",
+                        use_container_width=True
+                    ):
+                        st.session_state["equip_detail_product"] = prod["product_name"]
+                        st.session_state["equip_detail_category"] = prod["category"]
+                        del st.session_state["equip_cat_detail"]  # 退出品类详情
+                        st.rerun()
 
         else:
             st.markdown('<p style="color:#e8eaf0;font-weight:700;font-size:18px;">📚 8 大工具分类</p>'

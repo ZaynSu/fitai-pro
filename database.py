@@ -1085,15 +1085,27 @@ def _resolve_day_info(schedule_dict):
     days_data = schedule_dict.get("days_data") or {}
     plan_type = schedule_dict.get("plan_type", "single")
 
-    # 检查是否标记为经期休息
+    # 检查是否标记为经期休息（仅当当前用户性别为女时才显示）
     notes = (schedule_dict.get("notes") or "").lower()
     if notes == "period_rest":
-        return {
-            "muscle_group": "经期休息",
-            "is_rest": True,
-            "is_period": True,
-            "exercises": [],
-        }
+        # 检查当前用户性别 - 如果改成男了，period_rest 标记忽略
+        try:
+            _conn_g = get_conn(); _c_g = _conn_g.cursor()
+            _c_g.execute("SELECT gender FROM user_profile ORDER BY id DESC LIMIT 1")
+            _row_g = _c_g.fetchone()
+            _conn_g.close()
+            _current_gender = _row_g[0] if _row_g else None
+        except Exception:
+            _current_gender = None
+
+        if _current_gender == "女":
+            return {
+                "muscle_group": "经期休息",
+                "is_rest": True,
+                "is_period": True,
+                "exercises": [],
+            }
+        # 非女性：忽略 period_rest 标记，按正常训练日处理
 
     if plan_type == "single":
         day = days_data.get("single", {})

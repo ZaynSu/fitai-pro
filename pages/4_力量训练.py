@@ -1166,11 +1166,16 @@ with tabs[2]:
                 if st.button("✅ 确认一键安排", use_container_width=True, type="primary", key="batch_confirm"):
                     sch_time_str = get_setting("default_workout_time", "18:00")
 
-                    # 检查是否需要避开经期
-                    from database import get_menstrual_cycle, predict_period_dates
-                    cycle_data = get_menstrual_cycle()
-                    avoid_period = bool(cycle_data and cycle_data.get("auto_avoid"))
-                    period_dates = predict_period_dates(weeks_ahead=12) if avoid_period else set()
+                    # 检查是否需要避开经期（仅女性用户）
+                    _is_female_b = profile and profile.get("gender") == "女"
+                    if _is_female_b:
+                        from database import get_menstrual_cycle, predict_period_dates
+                        cycle_data = get_menstrual_cycle()
+                        avoid_period = bool(cycle_data and cycle_data.get("auto_avoid"))
+                        period_dates = predict_period_dates(weeks_ahead=12) if avoid_period else set()
+                    else:
+                        avoid_period = False
+                        period_dates = set()
 
                     # 先删除冲突的旧安排
                     for old in existing_in_range:
@@ -1378,29 +1383,32 @@ with tabs[2]:
             if existing:
                 st.caption(f"⚠ {qd_iso} 当天已有 {len(existing)} 个安排，新增的不会覆盖（除非时间相同）")
 
-            # 经期警告
-            from database import is_near_period as _is_near_p
-            try:
-                _period_check = _is_near_p(quick_date)
-                if _period_check == "in_period":
-                    st.warning(f"🌸 {qd_iso} 在预测经期内。继续安排训练？建议改为休息或低强度。")
-                elif _period_check and _period_check.startswith("pre_"):
-                    _d = _period_check.split("_")[1]
-                    st.info(f"🌸 {qd_iso} 距离预测经期还有 {_d} 天")
-            except: pass
+            # 经期警告（仅女性用户）
+            _is_female = profile and profile.get("gender") == "女"
+            if _is_female:
+                from database import is_near_period as _is_near_p
+                try:
+                    _period_check = _is_near_p(quick_date)
+                    if _period_check == "in_period":
+                        st.warning(f"🌸 {qd_iso} 在预测经期内。继续安排训练？建议改为休息或低强度。")
+                    elif _period_check and _period_check.startswith("pre_"):
+                        _d = _period_check.split("_")[1]
+                        st.info(f"🌸 {qd_iso} 距离预测经期还有 {_d} 天")
+                except: pass
 
             if st.button("📅 安排此次训练", use_container_width=True, type="primary", key="quick_sch_submit"):
                 # 计算 weekday_index
                 _wd = quick_date.weekday()
-                # 检查是否经期 → 自动改为经期休息
+                # 检查是否经期 → 自动改为经期休息（仅女性）
                 _notes = ""
-                try:
-                    from database import get_menstrual_cycle
-                    _cycle = get_menstrual_cycle()
-                    _avoid = bool(_cycle and _cycle.get("auto_avoid"))
-                    if _avoid and _is_near_p(quick_date) == "in_period":
-                        _notes = "period_rest"
-                except: pass
+                if _is_female:
+                    try:
+                        from database import get_menstrual_cycle, is_near_period as _is_near_p2
+                        _cycle = get_menstrual_cycle()
+                        _avoid = bool(_cycle and _cycle.get("auto_avoid"))
+                        if _avoid and _is_near_p2(quick_date) == "in_period":
+                            _notes = "period_rest"
+                    except: pass
                 add_schedule(
                     plan_id=quick_plan["id"],
                     schedule_date=qd_iso,
